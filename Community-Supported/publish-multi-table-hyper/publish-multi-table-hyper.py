@@ -42,6 +42,14 @@ customer_table = TableDefinition(
     ]
 )
 
+customer_emails_table = TableDefinition(
+    table_name="CustomerEmails",
+    columns=[
+        TableDefinition.Column(name="Email Address", type=SqlType.varchar(1024), nullability=NOT_NULLABLE),
+        TableDefinition.Column(name="Customer ID", type=SqlType.text(), nullability=NOT_NULLABLE)
+    ]
+)
+
 def create_hyper_file_and_insert_data(path_to_database):
     """
     Shows how to create a hyper file with multiple tables and how to add assumed constraints such that Tableau Server 
@@ -58,11 +66,16 @@ def create_hyper_file_and_insert_data(path_to_database):
             # Create multiple tables.
             connection.catalog.create_table(table_definition=orders_table)
             connection.catalog.create_table(table_definition=customer_table)
+            connection.catalog.create_table(table_definition=customer_emails_table)
+
             # Create assumed primary key for the customer table and a foreign key referencing the "Customer ID" in the orders table.
             # This enables Tableau Server to infer which data model to analyze in the data source.
             connection.execute_command(f'ALTER TABLE {customer_table.table_name} ADD ASSUMED PRIMARY KEY ("Customer ID")')
             connection.execute_command(f'''ALTER TABLE {orders_table.table_name} ADD ASSUMED FOREIGN KEY 
                 ("Customer ID") REFERENCES  {customer_table.table_name} ( "Customer ID" )''')
+            connection.execute_command(f'''ALTER TABLE {customer_emails_table.table_name} ADD ASSUMED FOREIGN KEY 
+                ("Customer ID") REFERENCES  {customer_table.table_name} ( "Customer ID" )''')
+
 
             # Insert data into Orders table.
             orders_data_to_insert = [
@@ -83,6 +96,18 @@ def create_hyper_file_and_insert_data(path_to_database):
             with Inserter(connection, customer_table) as inserter:
                 inserter.add_rows(rows=customer_data_to_insert)
                 inserter.execute()
+
+            # Insert data into Customer Emails table
+            email_data_to_insert = [
+                ["DK-13375", "test@abc.com"],
+                ["DK-13375", "test@anotherdomain.com"],
+                ["EB-13705", "blah@foobar.com"]
+            ]
+
+            with Inserter(connection, customer_emails_table) as inserter:
+                inserter.add_rows(rows=email_data_to_insert)
+                inserter.execute()
+
 
 def publish_hyper(token_name, token_value, site_name, server_address, project_name, path_to_database):
     """
