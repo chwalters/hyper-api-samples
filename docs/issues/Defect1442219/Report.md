@@ -1,4 +1,4 @@
-# Summary
+# Summary - Defect 1442219
 There is a bug in the Tableau SDKs that causes publishing a Hyper file with more than 2 related tables to fail with an error 400011: Bad Request.  Publishing a Hyper file with 2 related tables works fine; adding any more than 2 will fail.  This document describes the steps to reproduce the issue.  This bug might either be in the Hyper SDK itself, or possibly in the Tableau Server REST API; or the Python TSC library.
 
 This defect/bug was first reported on the Issue page at the Github repo for the Tableau Examples as [Issue 72][1].  Subsequently, it was assigned a defect number by the GitHub user [@vogelsgesang][2] (or at least, the number seems known to him).
