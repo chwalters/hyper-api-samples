@@ -1,8 +1,10 @@
 # Summary
 There is a bug in the Tableau SDKs that causes publishing a Hyper file with more than 2 related tables to fail with an error 400011: Bad Request.  Publishing a Hyper file with 2 related tables works fine; adding any more than 2 will fail.  This document describes the steps to reproduce the issue.  This bug might either be in the Hyper SDK itself, or possibly in the Tableau Server REST API; or the Python TSC library.
 
+This defect/bug was first reported on the Issue page at the Github repo for the Tableau Examples as [Issue 72][1].  Subsequently, it was assigned a defect number by the GitHub user [@vogelsgesang][2] (or at least, the number seems known to him).
+
 ## Background
-The Hyper API is a set of functions published by Tableau to manipulate Hyper files.  Hyper files are the native format for data extracts in Tableau.  According to Tableau's [documentation][1] the Hyper API allows developers to:
+The Hyper API is a set of functions published by Tableau to manipulate Hyper files.  Hyper files are the native format for data extracts in Tableau.  According to Tableau's [documentation][3] the Hyper API allows developers to:
 
 * Create extract files for data sources not currently supported by Tableau.
 * Automate custom extract, transform and load (ETL) processes (for example, implement rolling window updates or custom incremental updates).
@@ -12,9 +14,9 @@ The Hyper API is a set of functions published by Tableau to manipulate Hyper fil
 * Load data directly from CSV files, much faster, and without having to write special code to do so.
 * Use the power of SQL to interact with data in .hyper files. The Hyper API provides methods for executing SQL on .hyper files.
 
-To programmatically publish the extracts to Tableau Server, developers use the [Tableau Server REST API][2] or the [Tableau Server Client (Python) library (TSC)][3].
+To programmatically publish the extracts to Tableau Server, developers use the [Tableau Server REST API][4] or the [Tableau Server Client (Python) library (TSC)][5].
 
-Tableau provides a set of [examples][4] that show 1) how to create a multi-table Hyper file that has embedded relationships, and 2) how to publish the data using the REST API or TSC.
+Tableau provides a set of [examples][6] that show 1) how to create a multi-table Hyper file that has embedded relationships, and 2) how to publish the data using the REST API or TSC.
 
 We started using the Hyper SDK to automate an ETL process from a non-supported data source (Universe from Rocket).  We quickly discovered that our data files failed to publish.  So in order to learn more about the capabilities of the SDK, or whether we were using the SDK incorrectly, we tried to use the examples published on Github.
 
@@ -67,11 +69,11 @@ Datasource published. Datasource ID: 45*******43*******bb***2
 
 Open Tableau Desktop.  Your new Hyper file data source uploaded in the previous step is now usable.  Note that the relationships and data types are pre-defined; no additional steps are required for the user to start creating a report/workbook.  The data source is completely inferred by Tableau Server.  Our entire automation requirement is driven by the desire to have *predefined relationships preserved in the resulting data source* which is why we want to use the Hyper SDK for our project in the first place.
 
-![Connect to Data Source in Tableau Desktop][5]
+![Connect to Data Source in Tableau Desktop][7]
 
 Double click to use the data source in a new workbook.
 
-![Using the Data Source in Tableau Desktop][6]
+![Using the Data Source in Tableau Desktop][8]
 
 As you can see, creating the Hyper file and publishing to Tableau has worked perfectly with the default example.
 
@@ -159,13 +161,15 @@ tableauserverclient.server.endpoint.exceptions.ServerResponseError:
  
 ```
 
-All of the modifications to the original example code described in this document can be found in [this Github repo][7]; this is a fork of the original examples.
+All of the modifications to the original example code described in this document can be found in [this Github repo][9]; this is a fork of the original examples.
 
 
-  [1]: https://help.tableau.com/current/api/hyper_api/en-us/index.html
-  [2]: https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm
-  [3]: https://tableau.github.io/server-client-python/#
-  [4]: https://github.com/tableau/hyper-api-samples
-  [5]: https://github.com/chwalters/hyper-api-samples/blob/main/docs/issues/Defect1442219/TDI_00.png?raw=true
-  [6]: https://github.com/chwalters/hyper-api-samples/blob/main/docs/issues/Defect1442219/TDI_01.png?raw=true
-  [7]: https://github.com/chwalters/hyper-api-samples
+  [1]: https://github.com/tableau/hyper-api-samples/issues/72
+  [2]: https://github.com/vogelsgesang
+  [3]: https://help.tableau.com/current/api/hyper_api/en-us/index.html
+  [4]: https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm
+  [5]: https://tableau.github.io/server-client-python/#
+  [6]: https://github.com/tableau/hyper-api-samples
+  [7]: https://github.com/chwalters/hyper-api-samples/blob/main/docs/issues/Defect1442219/TDI_00.png?raw=true
+  [8]: https://github.com/chwalters/hyper-api-samples/blob/main/docs/issues/Defect1442219/TDI_01.png?raw=true
+  [9]: https://github.com/chwalters/hyper-api-samples
